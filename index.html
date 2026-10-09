@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>錢錢管家</title>
+  <meta name="description" content="個人記帳：快速記一筆">
+  <meta name="theme-color" content="#FFF8E8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#17150F" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="錢錢管家">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" href="icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <!-- 首次設定：在「加入主畫面」後的 App 內輸入（iOS 主畫面 App 與 Safari 儲存空間分開） -->
+  <section id="setup" class="screen" hidden>
+    <img src="icon-192.png" alt="" class="setup-logo" width="96" height="96">
+    <h1>錢錢管家</h1>
+    <p class="muted">第一次使用，請貼上 Apps Script 的 <code>/exec</code> 網址與 <code>APP_SECRET</code>。</p>
+    <form id="setup-form" autocomplete="off">
+      <label>網址<input id="setup-url" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" required></label>
+      <label>密鑰<input id="setup-secret" type="password" required></label>
+      <button type="submit" class="primary" id="setup-btn">連線</button>
+      <p id="setup-err" class="error" hidden></p>
+    </form>
+    <p class="muted small" id="setup-tip" hidden>💡 還沒加入主畫面？請先在 Safari 按「分享 → 加入主畫面」，再從桌面圖示打開設定。</p>
+  </section>
+
+  <main id="app" class="screen" hidden>
+    <header class="top">
+      <h1>錢錢管家</h1>
+      <button id="btn-settings" class="icon-btn" aria-label="設定">⚙︎</button>
+    </header>
+
+    <div id="result"></div>
+
+    <section id="ask" class="card" hidden>
+      <p class="ask-title"></p>
+      <div class="chips" id="ask-chips"></div>
+      <button class="link" id="ask-cancel">取消</button>
+    </section>
+
+    <section class="composer">
+      <div class="label-row"><span>付款方式</span><span id="method-hint" class="hint" hidden>請選付款方式</span></div>
+      <div class="chips" id="methods"></div>
+
+      <div class="label-row" id="freq-label"><span>常用</span></div>
+      <div class="chips scroll" id="frequent"></div>
+
+      <form id="entry-form" autocomplete="off">
+        <div class="input-wrap">
+          <div class="ghost" aria-hidden="true"><span class="ghost-typed"></span><span class="ghost-amount"></span></div>
+          <input id="entry" type="text" enterkeyhint="send" placeholder="午餐 120" autocapitalize="off" autocorrect="off" spellcheck="false">
+        </div>
+        <button type="submit" class="primary send" id="send">記一筆</button>
+      </form>
+      <p id="error" class="error" hidden></p>
+      <p class="muted small">也可以打：<code>10/1 晚餐 300</code>、<code>退款 國泰 高鐵 1200</code>、<code>國泰 iPhone 36000 分12期</code>、<code>收入 獎金 5000</code>。查詢、刪改請用 LINE。</p>
+    </section>
+  </main>
+
+  <dialog id="settings">
+    <h2>設定</h2>
+    <p class="muted small" id="settings-url"></p>
+    <button class="secondary" id="btn-refresh">重新整理常用項目</button>
+    <button class="danger" id="btn-reset">清除網址與密鑰</button>
+    <button class="link" id="btn-close">關閉</button>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
