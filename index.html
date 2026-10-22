@@ -2,11 +2,11 @@
 <html lang="zh-Hant-TW">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
   <title>錢錢管家</title>
   <meta name="description" content="個人記帳：快速記一筆">
-  <meta name="theme-color" content="#FFF8E8" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#17150F" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#F5F7FE" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#141726" media="(prefers-color-scheme: dark)">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="app.css">
 </head>
 <body>
-  <!-- 首次設定：在「加入主畫面」後的 App 內輸入（iOS 主畫面 App 與 Safari 儲存空間分開） -->
+  <!-- 首次設定（PWA）：在「加入主畫面」後的 App 內輸入（iOS 主畫面 App 與 Safari 儲存空間分開）。LINE 裡的 LIFF 不需要 -->
   <section id="setup" class="screen" hidden>
     <img src="icon-192.png" alt="" class="setup-logo" width="96" height="96">
     <h1>錢錢管家</h1>
@@ -31,45 +31,93 @@
     <p class="muted small" id="setup-tip" hidden>💡 還沒加入主畫面？請先在 Safari 按「分享 → 加入主畫面」，再從桌面圖示打開設定。</p>
   </section>
 
-  <main id="app" class="screen" hidden>
-    <header class="top">
-      <h1>錢錢管家</h1>
-      <button id="btn-settings" class="icon-btn" aria-label="設定">⚙︎</button>
+  <!-- LIFF 載入中 / 錯誤 -->
+  <section id="boot" class="screen" hidden>
+    <img src="icon-192.png" alt="" class="setup-logo" width="72" height="72">
+    <p id="boot-msg" class="muted">載入中…</p>
+  </section>
+
+  <!-- 計算機記帳 -->
+  <main id="app" hidden>
+    <header class="bar-top">
+      <div class="seg" id="modes" role="tablist">
+        <button type="button" data-mode="expense" class="on">支出</button>
+        <button type="button" data-mode="income">收入</button>
+        <button type="button" data-mode="refund">退款</button>
+      </div>
+      <div class="top-right">
+        <button type="button" class="pill" id="btn-date">📅 今天 ▾</button>
+        <button type="button" class="icon-btn" id="btn-text" aria-label="文字輸入">⌨️</button>
+        <button type="button" class="icon-btn" id="btn-settings" aria-label="設定">⚙︎</button>
+      </div>
     </header>
 
-    <div id="result"></div>
+    <div id="date-menu" class="menu" hidden>
+      <button type="button" data-days="0">今天</button>
+      <button type="button" data-days="1">昨天</button>
+      <button type="button" data-days="2">前天</button>
+      <button type="button" id="date-pick">選日期…<input type="date" id="date-input"></button>
+    </div>
 
+    <div class="mid">
+      <div id="result" hidden></div>
+
+      <div class="display" id="display">
+        <div class="expr" id="expr">&nbsp;</div>
+        <div class="amount ph" id="amount">$0</div>
+      </div>
+
+      <input id="note" class="note" type="text" placeholder="備註（選填）" enterkeyhint="done" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="40">
+
+      <div class="freq" id="freq-row">
+        <span class="lbl">常用</span>
+        <div class="freq-list" id="frequent"></div>
+      </div>
+
+      <div class="picks" id="picks">
+        <div class="cats" id="cats"></div>
+        <div class="methods" id="methods"></div>
+      </div>
+      <p class="hint" id="hint" hidden></p>
+    </div>
+
+    <div class="keypad" id="keypad">
+      <button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="back" class="fn" aria-label="刪除">⌫</button>
+      <button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="+" class="fn">＋</button>
+      <button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="send" class="send" id="send">送出</button>
+      <button type="button" data-k="0">0</button><button type="button" data-k="00">00</button><button type="button" data-k="clear" class="fn">C</button>
+    </div>
+  </main>
+
+  <!-- 文字輸入（分期、外幣等，沿用 LINE 語法） -->
+  <main id="textmode" class="screen" hidden>
+    <header class="top">
+      <button type="button" class="link back" id="btn-calc">‹ 計算機</button>
+      <h1>文字輸入</h1>
+      <span></span>
+    </header>
+    <div id="t-result"></div>
     <section id="ask" class="card" hidden>
       <p class="ask-title"></p>
       <div class="chips" id="ask-chips"></div>
-      <button class="link" id="ask-cancel">取消</button>
+      <button type="button" class="link" id="ask-cancel">取消</button>
     </section>
-
-    <section class="composer">
-      <div class="label-row"><span>付款方式</span><span id="method-hint" class="hint" hidden>請選付款方式</span></div>
-      <div class="chips" id="methods"></div>
-
-      <div class="label-row" id="freq-label"><span>常用</span></div>
-      <div class="chips scroll" id="frequent"></div>
-
-      <form id="entry-form" autocomplete="off">
-        <div class="input-wrap">
-          <div class="ghost" aria-hidden="true"><span class="ghost-typed"></span><span class="ghost-amount"></span></div>
-          <input id="entry" type="text" enterkeyhint="send" placeholder="午餐 120" autocapitalize="off" autocorrect="off" spellcheck="false">
-        </div>
-        <button type="submit" class="primary send" id="send">記一筆</button>
-      </form>
-      <p id="error" class="error" hidden></p>
-      <p class="muted small">也可以打：<code>10/1 晚餐 300</code>、<code>退款 國泰 高鐵 1200</code>、<code>國泰 iPhone 36000 分12期</code>、<code>收入 獎金 5000</code>。查詢、刪改請用 LINE。</p>
-    </section>
+    <div class="label-row"><span>付款方式</span><span id="t-hint" class="warn" hidden>請選付款方式</span></div>
+    <div class="chips" id="t-methods"></div>
+    <form id="entry-form" autocomplete="off">
+      <input id="entry" type="text" enterkeyhint="send" placeholder="國泰 iPhone 36000 分12期" autocapitalize="off" autocorrect="off" spellcheck="false">
+      <button type="submit" class="primary" id="t-send">記一筆</button>
+    </form>
+    <p id="t-error" class="error" hidden></p>
+    <p class="muted small">也可以打：<code>10/1 晚餐 300</code>、<code>退款 國泰 高鐵 1200</code>、<code>玉山 拉麵 1200日圓</code>、<code>收入 獎金 5000</code>。查詢、刪改請用 LINE。</p>
   </main>
 
   <dialog id="settings">
     <h2>設定</h2>
     <p class="muted small" id="settings-url"></p>
-    <button class="secondary" id="btn-refresh">重新整理常用項目</button>
-    <button class="danger" id="btn-reset">清除網址與密鑰</button>
-    <button class="link" id="btn-close">關閉</button>
+    <button type="button" class="secondary" id="btn-refresh">重新整理常用項目</button>
+    <button type="button" class="danger" id="btn-reset">清除網址與密鑰</button>
+    <button type="button" class="link" id="btn-close">關閉</button>
   </dialog>
 
   <script src="app.js"></script>

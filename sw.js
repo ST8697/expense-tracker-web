@@ -2,7 +2,7 @@
  * 離線外殼快取：先用快取秒開，背景抓新版下次生效（stale-while-revalidate）。
  * 記帳 API（script.google.com）是跨網域，不經過這裡。
  */
-const CACHE = 'shell-v1';
+const CACHE = 'shell-v2';
 const SHELL = ['./', 'index.html', 'app.css', 'app.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
