@@ -1,40 +1,40 @@
 :root {
-  --bg: #F5F7FE;
+  --bg: #FFF8E8;
   --surface: #FFFFFF;
-  --text: #1B2140;
-  --muted: #6B7194;
-  --faint: #9AA0BC;
-  --line: #DDE2F7;
-  --accent: #AFBBF2;
-  --accent-ink: #1E2A5E;
-  --chip: #E6EAFB;
+  --text: #1C1A16;
+  --muted: #7A7366;
+  --faint: #B3AA98;
+  --line: #EADFC6;
+  --accent: #F2A516;
+  --accent-ink: #3A2600;
+  --chip: #F6EEDC;
   --key: #FFFFFF;
-  --key-fn: #EEF0FC;
-  --key-down: #D5DBF7;
+  --key-fn: #FBF3E1;
+  --key-down: #F3E2BC;
   --green: #06A84A;
   --orange: #E08600;
   --red: #D93A35;
-  --track: #E6EAFB;
+  --track: #EFE7D4;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #141726;
-    --surface: #1C2035;
-    --text: #E8EBF8;
-    --muted: #8E94B3;
-    --faint: #6E7495;
-    --line: #2E3454;
-    --accent: #AFBBF2;
-    --accent-ink: #141726;
-    --chip: #232842;
-    --key: #1C2035;
-    --key-fn: #252A44;
-    --key-down: #343B60;
+    --bg: #17150F;
+    --surface: #24211A;
+    --text: #F3EEE3;
+    --muted: #A69E8E;
+    --faint: #6F685A;
+    --line: #3A352A;
+    --accent: #F2B33D;
+    --accent-ink: #2A1B00;
+    --chip: #2F2B22;
+    --key: #24211A;
+    --key-fn: #2C2820;
+    --key-down: #3E382B;
     --green: #3DD27A;
     --orange: #F5A23A;
     --red: #FF6B63;
-    --track: #2E3454;
+    --track: #3A352A;
     color-scheme: dark;
   }
 }
@@ -105,7 +105,7 @@ input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
 .menu {
   position: absolute; z-index: 5; right: 12px; top: calc(env(safe-area-inset-top) + 48px);
   background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 4px;
-  display: grid; min-width: 140px; box-shadow: 0 8px 24px rgba(20, 23, 38, .18);
+  display: grid; min-width: 140px; box-shadow: 0 8px 24px rgba(58, 38, 0, .18);
 }
 .menu button { text-align: left; padding: 10px 12px; border-radius: 8px; position: relative; overflow: hidden; }
 .menu button:active { background: var(--chip); }
@@ -163,7 +163,7 @@ input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
 
 /* 結果：蓋在金額區上方，開始記下一筆就收起 */
 #result { position: absolute; z-index: 4; left: 12px; right: 12px; top: 0; }
-#result .card { margin: 0; box-shadow: 0 8px 24px rgba(20, 23, 38, .16); }
+#result .card { margin: 0; box-shadow: 0 8px 24px rgba(58, 38, 0, .16); }
 .close { color: var(--muted); font-size: 16px; padding: 0 0 0 10px; }
 
 /* ---------- 文字輸入 ---------- */
